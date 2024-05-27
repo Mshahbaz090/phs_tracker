@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Dashboard from "./Dashboard";
 import AddEmployeeForm from "./Forms/AddEmployeeForm";
 import EmployeeDetails from "./EmployeeDetails";
@@ -9,8 +9,6 @@ import { useSelector, useDispatch } from "react-redux";
 import { addScreen } from "../Redux/screenSlice";
 import HR from "/hr.png";
 import RiskUser from "./RiskUser";
-import LeaveForm from "./LeaveForm";
-import axios from "axios";
 
 const Main = () => {
   const currentScreen = useSelector((state) => state.screen[0]);
@@ -18,23 +16,12 @@ const Main = () => {
   const [loginEmail, setLoginEmail] = useState(null);
   const [loginPassword, setLoginPassword] = useState(null);
   const [activeComponent, setActiveComponent] = useState("Dashboard");
+
   const dispatch = useDispatch();
-  const [showNotificationModel, setShownotificationmodel] = useState(false);
 
   const handleMobileMenu = () => {
     setMobileMenu(!mobileMenu);
   };
-
-  const [joiningDate, setJoiningDate] = useState([]);
-
-  useEffect(() => {
-    axios
-      .get("https://phs.azzappointments.com/apis/public/api/admin/joining-date")
-      .then((res) => {
-        setJoiningDate(res.data.users);
-        console.log(res.data.users);
-      });
-  }, []);
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -119,7 +106,8 @@ const Main = () => {
               </span>
             </div>
           </div>
-          <div className=" grid lg:grid-cols-8 grid-cols-1 max-lg:h-fit h-screen">
+
+          <div className=" grid lg:grid-cols-8 grid-cols-1 max-lg:h-fit h-screen  ">
             <div
               id="sidebar"
               className={
@@ -167,6 +155,7 @@ const Main = () => {
                     Dashboard
                   </span>
                 </div>
+
                 <div className="flex flex-col items-start justify-center gap-2">
                   <div className="font-semibold flex items-center justify-start gap-2 ">
                     <span>
@@ -188,30 +177,15 @@ const Main = () => {
                     </span>
                     Employees
                   </div>
+
                   <div
                     onClick={() => setActiveComponent("EmployeeDetails")}
                     className={
                       activeComponent === "EmployeeDetails"
                         ? "flex items-center justify-center gap-2 hover:cursor-pointer text-[14px] hover:underline  self-start text-blueColor font-medium "
-                        : "flex items-center justify-center gap-2 hover:cursor-pointer text-[14px] hover:underline  self-start ml-2"
+                        : "flex items-center justify-center gap-2 hover:cursor-pointer text-[14px] hover:underline  self-start"
                     }
                   >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width={14}
-                      height={14}
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth={2}
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="lucide lucide-book-user"
-                    >
-                      <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20" />
-                      <circle cx={12} cy={8} r={2} />
-                      <path d="M15 13a3 3 0 1 0-6 0" />
-                    </svg>
                     Employee Details
                   </div>
                   <div
@@ -219,26 +193,9 @@ const Main = () => {
                     className={
                       activeComponent === "AddEmployeeForm"
                         ? "flex items-center justify-center gap-2 hover:cursor-pointer text-[14px] hover:underline  self-start  text-blueColor font-medium "
-                        : " flex items-center justify-center gap-2 hover:cursor-pointer text-[14px] hover:underline  self-start ml-2"
+                        : " flex items-center justify-center gap-2 hover:cursor-pointer text-[14px] hover:underline  self-start"
                     }
                   >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width={14}
-                      height={14}
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth={2}
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="lucide lucide-user-plus"
-                    >
-                      <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-                      <circle cx={9} cy={7} r={4} />
-                      <line x1={19} x2={19} y1={8} y2={14} />
-                      <line x1={22} x2={16} y1={11} y2={11} />
-                    </svg>
                     Add Employee
                   </div>
                 </div>
@@ -272,58 +229,10 @@ const Main = () => {
                     className={
                       activeComponent === "AttendanceReport"
                         ? "flex items-center justify-center gap-2 hover:cursor-pointer text-[14px] hover:underline  self-center  text-blueColor font-medium "
-                        : " flex items-center justify-center gap-2 hover:cursor-pointer text-[14px] hover:underline  self-center ml-2"
+                        : " flex items-center justify-center gap-2 hover:cursor-pointer text-[14px] hover:underline  self-center"
                     }
                   >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width={14}
-                      height={14}
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth={2}
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="lucide lucide-notepad-text"
-                    >
-                      <path d="M8 2v4" />
-                      <path d="M12 2v4" />
-                      <path d="M16 2v4" />
-                      <rect width={16} height={18} x={4} y={4} rx={2} />
-                      <path d="M8 10h6" />
-                      <path d="M8 14h8" />
-                      <path d="M8 18h5" />
-                    </svg>
                     Attendance Report
-                  </div>
-                  <div
-                    onClick={() => setActiveComponent("LeaveForm")}
-                    className={
-                      activeComponent === "LeaveForm"
-                        ? "flex items-center justify-center gap-2 hover:cursor-pointer text-[14px] hover:underline  self-start   text-blueColor  font-medium"
-                        : "flex items-center justify-center gap-2 hover:cursor-pointer text-[14px] hover:underline  self-start ml-2"
-                    }
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width={14}
-                      height={14}
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth={2}
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="lucide lucide-clipboard-type"
-                    >
-                      <rect width={8} height={4} x={8} y={2} rx={1} ry={1} />
-                      <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
-                      <path d="M9 12v-1h6v1" />
-                      <path d="M11 17h2" />
-                      <path d="M12 11v6" />
-                    </svg>
-                    Leave Form
                   </div>
                 </div>
                 <div className="flex flex-col items-start justify-center gap-2 ">
@@ -352,24 +261,9 @@ const Main = () => {
                     className={
                       activeComponent === "AppUsage"
                         ? "flex items-center justify-center gap-2 hover:cursor-pointer text-[14px] hover:underline self-start   text-blueColor font-medium "
-                        : "flex items-center justify-center gap-2 hover:cursor-pointer text-[14px] hover:underline self-start ml-2"
+                        : "flex items-center justify-center gap-2 hover:cursor-pointer text-[14px] hover:underline self-start"
                     }
                   >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width={14}
-                      height={14}
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth={2}
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="lucide lucide-pie-chart"
-                    >
-                      <path d="M21.21 15.89A10 10 0 1 1 8 2.83" />
-                      <path d="M22 12A10 10 0 0 0 12 2v10z" />
-                    </svg>
                     App Usage
                   </div>
                   <div
@@ -377,27 +271,9 @@ const Main = () => {
                     className={
                       activeComponent === "Screenshots"
                         ? "flex items-center justify-center gap-2 hover:cursor-pointer text-[14px] hover:underline  self-start  text-blueColor font-medium "
-                        : "flex items-center justify-center gap-2 hover:cursor-pointer text-[14px] hover:underline  self-start ml-2"
+                        : "flex items-center justify-center gap-2 hover:cursor-pointer text-[14px] hover:underline  self-start"
                     }
                   >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width={14}
-                      height={14}
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth={2}
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="lucide lucide-focus"
-                    >
-                      <circle cx={12} cy={12} r={3} />
-                      <path d="M3 7V5a2 2 0 0 1 2-2h2" />
-                      <path d="M17 3h2a2 2 0 0 1 2 2v2" />
-                      <path d="M21 17v2a2 2 0 0 1-2 2h-2" />
-                      <path d="M7 21H5a2 2 0 0 1-2-2v-2" />
-                    </svg>
                     Screenshots
                   </div>
                   <div
@@ -405,91 +281,21 @@ const Main = () => {
                     className={
                       activeComponent === "RiskUsers"
                         ? "flex items-center justify-center gap-2 hover:cursor-pointer text-[14px] hover:underline  self-start   text-blueColor  font-medium"
-                        : "flex items-center justify-center gap-2 hover:cursor-pointer text-[14px] hover:underline  self-start ml-2"
+                        : "flex items-center justify-center gap-2 hover:cursor-pointer text-[14px] hover:underline  self-start"
                     }
                   >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width={14}
-                      height={14}
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth={2}
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="lucide lucide-clock-2"
-                    >
-                      <circle cx={12} cy={12} r={10} />
-                      <polyline points="12 6 12 12 16 10" />
-                    </svg>
                     Working Time
                   </div>
                 </div>
               </div>
             </div>
-            <div className="col-span-7 border border-gray-200">
+
+            <div className="col-span-7 border border-gray-200  ">
               <div className="flex p-5 flex-row justify-between items-center max-lg:hidden">
-                <h1 className="font-bold text-blueColor text-xl tracking-wider drop-shadow-sm">
+                <h1 className="font-bold text-blueColor text-xl tracking-wider drop-shadow-sm	  ">
                   PHS Tracking Dashboard
                 </h1>
-                <div className="flex items-center justify-center gap-2">
-                  <div className="relative ">
-                    <div
-                      onClick={() =>
-                        setShownotificationmodel(!showNotificationModel)
-                      }
-                      className="font-bold  text-blueColor tracking-wider cursor-pointer "
-                    >
-                      <div className="font-bold mr-4 text-blueColor tracking-wider">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width={24}
-                          height={24}
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth={2}
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          className="lucide lucide-bell"
-                        >
-                          <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
-                          <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
-                        </svg>
-                        <div className="badge badge-info h-4 w-4 bg-red-500 text-white text-[9px] absolute -top-2 right-2  ">
-                          {joiningDate.length > 99 ? "+99" : joiningDate.length}
-                        </div>
-                        {showNotificationModel && (
-                          <div className="h-fit w-[320px] p-2 rounded-lg shadow-lg border absolute  bg-white z-20 mt-5 ">
-                            <div className="overflow-x-auto w-full h-[200px] border-2 rounded ">
-                              <table className="table">
-                                <thead>
-                                  <tr>
-                                    <th className=" sticky top-0 bg-white ">
-                                      ID
-                                    </th>
-                                    <th className=" sticky top-0 bg-white ">
-                                      Name
-                                    </th>
-                                  </tr>
-                                </thead>
-                                <tbody>
-                                  {joiningDate &&
-                                    joiningDate.map((item) => (
-                                      <tr key={item.id} className="hover">
-                                        <td>{item.id}</td>
-                                        <td>{item.name}</td>
-                                      </tr>
-                                    ))}
-                                </tbody>
-                              </table>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
+                <div className="flex items-center justify-center">
                   <div
                     onClick={() => setActiveComponent("AddEmployeeForm")}
                     className="btn btn-primary  text-white"
@@ -538,6 +344,7 @@ const Main = () => {
                 </div>
               </div>
               <hr />
+
               <div className="flex items-start justify-center overflow-y-scroll h-[90vh]">
                 {activeComponent === "Dashboard" && <Dashboard />}
                 {activeComponent === "AddEmployeeForm" && <AddEmployeeForm />}
@@ -546,7 +353,6 @@ const Main = () => {
                 {activeComponent === "AppUsage" && <AppUsage />}
                 {activeComponent === "Screenshots" && <Screenshots />}
                 {activeComponent === "RiskUsers" && <RiskUser />}
-                {activeComponent === "LeaveForm" && <LeaveForm />}
               </div>
             </div>
           </div>
@@ -576,6 +382,7 @@ const Main = () => {
                 placeholder="Enter email address"
                 className="input input-bordered w-full max-w-xs"
               />
+
               <input
                 onChange={(e) => setLoginPassword(e.target.value)}
                 required
@@ -583,6 +390,7 @@ const Main = () => {
                 placeholder="Enter password"
                 className="input input-bordered w-full max-w-xs -mt-5 -mb-5"
               />
+
               <button
                 type="submit"
                 className="btn btn-primary text-white w-full shadow-lg -mb-10"

@@ -4,21 +4,20 @@ import Select from "react-select";
 import "react-date-range/dist/styles.css"; // main style file
 import "react-date-range/dist/theme/default.css"; // theme css file
 import { DateRange } from "react-date-range";
-import moment from "moment-timezone";
 
-const RiskUser = () => {
+const AppUsage = () => {
   const [response, setResponse] = useState(null);
   const [users, setUsers] = useState(null);
   const [selectedOption, setSelectedOption] = useState(null);
   const [selectedUserId, setSelectedUserId] = useState(null);
+
   const [options, setOptions] = useState([]);
+
   const [datePanel, setDatePanel] = useState(false);
-  const [selectedUserName, setSelectedUserName] = useState(null); // New state variable for selected user's name
 
   useEffect(() => {
     if (selectedOption) {
       setSelectedUserId(selectedOption.value); // Assuming selectedOption is an object with a 'value' key
-      setSelectedUserName(selectedOption.label);
     }
   }, [selectedOption]); // This effect runs every time selectedOption changes
 
@@ -45,7 +44,6 @@ const RiskUser = () => {
           .map((item) => item.name + -+item.id)
           .map((user) => {
             const [name, id] = user.split("-");
-
             return { value: id, label: name };
           });
         setOptions(userList);
@@ -59,16 +57,16 @@ const RiskUser = () => {
     if (selectedUserId && date[0].endDate) {
       axios
         .post(
-          "https://phs.azzappointments.com/apis/public/api/admin/idealusage",
+          "https://phs.azzappointments.com/apis/public/api/admin/app-usage",
           {
             user_id: selectedUserId,
-            start_date: date[0].startDate.toISOString().split("T")[0], // Format start date to ISO string
-            end_date: date[0].endDate.toISOString().split("T")[0], // Format end date to ISO string
           }
         )
         .then((res) => {
-          const responseData = res.data;
-          setResponse(responseData);
+          setResponse(res.data);
+          if (response && response.app_usage && response.app_usage === null) {
+            setResponse(null);
+          }
         })
         .catch((error) => {
           console.log("error", error);
@@ -100,7 +98,22 @@ const RiskUser = () => {
       .toString()
       .padStart(2, "0")}`;
 
-  const formatIdealTime = (seconds) => {
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const hours = date.getHours();
+    const minutes = date.getMinutes();
+    const ampm = hours >= 12 ? "PM" : "AM";
+    const formattedHours = hours % 12 || 12;
+    const formattedMinutes = minutes < 10 ? "0" + minutes : minutes;
+
+    return `${date.getDate()}-${(date.getMonth() + 1)
+      .toString()
+      .padStart(
+        2,
+        "0"
+      )}-${date.getFullYear()} ${formattedHours}:${formattedMinutes}${ampm}`;
+  };
+  const formatUsageTime = (seconds) => {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
 
@@ -118,19 +131,11 @@ const RiskUser = () => {
       }`;
     }
   };
-  function convertTimestamp(timestamp) {
-    const date = new Date(timestamp);
-    const day = String(date.getDate()).padStart(2, "0");
-    const month = String(date.getMonth() + 1).padStart(2, "0"); // January is 0!
-    const year = date.getFullYear();
-
-    return `${day}-${month}-${year}`;
-  }
 
   const filteredScreenshots =
     response &&
-    response.Low_time &&
-    response.Low_time.filter((filter) => {
+    response.app_usage &&
+    response.app_usage.filter((filter) => {
       const filterDate = new Date(filter.created_at).toISOString().slice(0, 10);
       return (
         (!formattedStartDate || filterDate >= formattedStartDate) &&
@@ -138,63 +143,9 @@ const RiskUser = () => {
       );
     });
 
-  const calculateWorkingTime = (checkInTime, breakTime, checkOutTime) => {
-    const nyTimezone = "America/New_York";
-    const currentTimeNY = moment().tz(nyTimezone);
-    const checkInTimeNY = moment.tz(checkInTime, nyTimezone);
-    //console.log("checkInTimeNY", checkInTimeNY);
-
-    let checkOutTimeNY;
-    if (checkOutTime) {
-      checkOutTimeNY = moment.tz(checkOutTime, nyTimezone);
-    } else {
-      checkOutTimeNY = currentTimeNY;
-    }
-    //console.log("checkOutTimeNY", checkOutTimeNY);
-    const checkdiff = checkOutTimeNY.diff(checkInTimeNY, "minutes");
-    //console.log("checkdiff", checkdiff);
-
-    const timeDifferenceMinutes = checkOutTimeNY.diff(checkInTimeNY, "minutes");
-
-    const workingTimeSeconds = (timeDifferenceMinutes - breakTime) * 60;
-    //console.log("breakTime", breakTime);
-    return formatIdealTime(workingTimeSeconds);
-  };
-
-  const calculateIdealTime = (
-    checkInTime,
-    idealTime,
-    breakTime,
-    checkOutTime
-  ) => {
-    // Get current time in New York time zone
-    const nyTimezone = "America/New_York";
-    const currentTimeNY = moment().tz(nyTimezone);
-    const checkInTimeNY = moment.tz(checkInTime, nyTimezone);
-
-    let checkOutTimeNY;
-    if (checkOutTime) {
-      checkOutTimeNY = moment.tz(checkOutTime, nyTimezone);
-    } else {
-      checkOutTimeNY = currentTimeNY;
-    }
-    //console.log("checkOutTimeNY", checkOutTimeNY);
-    const checkdiff = checkOutTimeNY.diff(checkInTimeNY, "minutes");
-    //console.log("checkdiff", checkdiff);
-
-    const timeDifferenceMinutes = checkOutTimeNY.diff(checkInTimeNY, "minutes");
-
-    const workingTime = (timeDifferenceMinutes - breakTime) * 60;
-    //console.log(workingTime);
-    //console.log(idealTime);
-    const idealWorkingTime = workingTime - idealTime;
-
-    return formatIdealTime(idealWorkingTime);
-  };
-
   return (
     <section className="px-5 py-5 w-full ">
-      <div className="pb-5 font-semibold text-xl text-center">Working Time</div>
+      <div className="pb-5 font-semibold text-xl text-center">App Usage</div>
 
       <section className="flex items-center justify-start gap-2  ">
         <div className="w-[220px] min-w-[220px] h-fit">
@@ -295,7 +246,7 @@ const RiskUser = () => {
               onClick={() => {
                 setDatePanel(!datePanel);
               }}
-              className="h-11 hover:bg-blue-600 bg-blue-500 text-white text-lg w-full rounded-none rounded-br rounded-bl"
+              className="h-11  btn btn-primary bg-appColor text-white text-lg w-full rounded-none rounded-br rounded-bl"
             >
               Apply
             </button>
@@ -330,50 +281,58 @@ const RiskUser = () => {
           ""
         )}
       </section>
-
-      {response && response.code === "success" && response.Low_time && (
-        <section className="flex flex-col items-start justify-start  mt-10 h-[65vh] ">
-          <div className="flex flex-wrap  h-[35vh] ">
-            <div className=" border-r border-gray-300 w-fit p-4 pt-10  ">
-              {selectedUserName}
-            </div>
-            <div className="grid grid-cols-6 gap-4">
-              {filteredScreenshots.map((item, index) => (
-                <div>
-                  <div key={index} className="flex h-fit ml-1 flex-wrap  ">
-                    <div className="ml-2 flex flex-col items-start justify-center border rounded w-44  bg-white border-gray-300 shadow-md hover:cursor-pointer  hover:shadow-lg gap-1  ">
-                      <div className="text-sm  font-medium text-center bg-gray-200 w-full py-1">
-                        {convertTimestamp(item.check_in_time)}
-                      </div>
-                      <div className="py-2 px-3 flex flex-col gap-1">
-                        <div className="text-sm font-medium text-appColor">
-                          Working Time
-                        </div>
-                        <div className="text-sm -mt-1 ">
-                          {calculateWorkingTime(
-                            item.check_in_time,
-                            item.break_time,
-                            item.check_out_time
-                          )}
-                        </div>
-                        <div className="text-sm font-semibold text-green-400">
-                          Ideal Time
-                        </div>
-                        <div className="text-sm -mt-1">
-                          {calculateIdealTime(
-                            item.check_in_time,
-                            item.ideal_time,
-                            item.break_time,
-                            item.check_out_time
-                          )}
-                        </div>
-                      </div>
-                    </div>
+      {filteredScreenshots && (
+        <section className="flex flex-col items-center justify-center pt-5">
+          <section className="w-full ">
+            <div className="">
+              {filteredScreenshots.length > 0 ? (
+                <div className="h-[70vh] overflow-y-scroll">
+                  <table className="table border ">
+                    {/* head */}
+                    <thead className="bg-gray-300">
+                      <tr>
+                        <th className="sticky top-0 bg-gray-300 text-black">
+                          App
+                        </th>
+                        <th className="sticky top-0 bg-gray-300 text-black">
+                          Usage Time
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {filteredScreenshots.map((usage) =>
+                        // Sort the app_usage array based on usage time
+                        usage.app_usage
+                          .filter(
+                            (item) =>
+                              item.usage >= 60 &&
+                              item.app &&
+                              item.app.trim() !== ""
+                          )
+                          .sort((a, b) => b.usage - a.usage) // Sort by numerical usage in descending order
+                          .flatMap((item, index) => (
+                            <tr key={index} className="hover:bg-gray-100">
+                              <td className="w-[80%] cursor-pointer hover:font-semibold hover:text-appColor">
+                                {item.app.replace("● ", "")}
+                              </td>
+                              <td className="w-[20%] text-red-300 font-medium">
+                                {formatUsageTime(item.usage)}
+                              </td>
+                            </tr>
+                          ))
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              ) : (
+                <div className="text-center h-[70vh] text-nowrap max-sm:ml-0 mt-2 border rounded">
+                  <div className=" px-3 py-3 ml-[90px] mt-5 text-md font-medium text-gray-400 flex bg-gray-100/50 border rounded w-fit">
+                    No data found.
                   </div>
                 </div>
-              ))}
+              )}
             </div>
-          </div>
+          </section>
         </section>
       )}
 
@@ -381,16 +340,16 @@ const RiskUser = () => {
         ""
       ) : (
         <div className="text-center h-[70vh] text-nowrap max-sm:ml-0 mt-7 ">
-          <div className="h-[70vh] border-2 rounded">
+          <div className=" h-[70vh] border-2 rounded">
             {!selectedUserId ? (
               <div className=" py-3 px-5 ml-[80px] mt-5 text-md font-medium text-gray-400 flex bg-gray-100/50 border rounded w-fit">
-                Please select an employee to view the risk users details.
+                Please select an employee to view the app usage.
               </div>
             ) : date[0].endDate ? (
-              " "
+              ""
             ) : (
               <div className=" py-3 px-5   ml-[80px] mt-5 text-md font-medium text-gray-400 flex bg-gray-100/50 border rounded w-fit">
-                Please select a date range to view risk user details.
+                Please select a date range to view the app usage.
               </div>
             )}
           </div>
@@ -399,4 +358,4 @@ const RiskUser = () => {
     </section>
   );
 };
-export default RiskUser;
+export default AppUsage;

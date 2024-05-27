@@ -11,85 +11,93 @@ const Dashboard = () => {
   // .......................................................................Status Api ...................................................................................
 
   useEffect(() => {
-    let data = "";
+    if (response === null) {
+      let data = "";
 
-    let config = {
-      method: "get",
-      maxBodyLength: Infinity,
-      url: "https://phs.azzappointments.com/apis/public/api/admin/get-status",
-      headers: {},
-      data: data,
-    };
+      let config = {
+        method: "get",
+        maxBodyLength: Infinity,
+        url: "https://phs.azzappointments.com/apis/public/api/admin/get-status",
+        headers: {},
+        data: data,
+      };
 
-    axios
-      .request(config)
-      .then((response) => {
-        const statuses = response.data.status;
-        setResponse(statuses);
-        // Filter out users with status === "checked_out"
-        const checkedOutEmployees = statuses.filter(
-          (user) => user.status === "checked_out"
-        );
-        setCheckedOutUsers(checkedOutEmployees);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+      axios
+        .request(config)
+        .then((response) => {
+          const statuses = response.data.status;
+          setResponse(statuses);
+          // Filter out users with status === "checked_out"
+          const checkedOutEmployees = statuses.filter(
+            (user) => user.status === "checked_out"
+          );
+          setCheckedOutUsers(checkedOutEmployees);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
   }, []);
   //................................................................................. Late Check In Api ..............................................................................
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(
-          "https://phs.azzappointments.com/apis/public/api/admin/late_check_in"
-        );
-        const data = response.data;
-        // Extract the values from the data object and convert to array
-        const lateCheckInsArray = Object.values(data);
+    if (lateCheckIns === null) {
+      const fetchData = async () => {
+        try {
+          const response = await axios.get(
+            "https://phs.azzappointments.com/apis/public/api/admin/late_check_in"
+          );
+          const data = response.data;
+          // Extract the values from the data object and convert to array
+          const lateCheckInsArray = Object.values(data);
 
-        setLateCheckIns(lateCheckInsArray);
-      } catch (error) {
-        console.error("Error fetching late check-ins:", error);
-      }
-    };
+          setLateCheckIns(lateCheckInsArray);
+        } catch (error) {
+          console.error("Error fetching late check-ins:", error);
+        }
+      };
 
-    fetchData();
+      fetchData();
+    }
   }, []);
   //................................................................................. Ridsk USers  Api ..............................................................................
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(
-          "https://phs.azzappointments.com/apis/public/api/admin/riskUsers"
-        );
-        const data = response.data.Risk_users;
-        // Extract the values from the data object and convert to array
-        const riskUsersArray = Object.values(data);
+    if (riskUsers === null) {
+      const fetchData = async () => {
+        try {
+          const response = await axios.get(
+            "https://phs.azzappointments.com/apis/public/api/admin/riskUsers"
+          );
+          const data = response.data.Risk_users;
+          // Extract the values from the data object and convert to array
+          const riskUsersArray = Object.values(data);
 
-        setRiskUsers(riskUsersArray);
-      } catch (error) {
-        console.error("Error fetching late check-ins:", error);
-      }
-    };
+          setRiskUsers(riskUsersArray);
+        } catch (error) {
+          console.error("Error fetching late check-ins:", error);
+        }
+      };
 
-    fetchData();
+      fetchData();
+    }
   }, []);
   // ............................................................................................Absent Today Api ..........................................................................
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(
-          "https://phs.azzappointments.com/apis/public/api/admin/absents"
-        );
-        const data = response.data.status;
+    if (absentToday === null) {
+      const fetchData = async () => {
+        try {
+          const response = await axios.get(
+            "https://phs.azzappointments.com/apis/public/api/admin/absents"
+          );
+          const data = response.data.status;
 
-        setAbsentToday(data);
-      } catch (error) {
-        console.error("Error fetching late check-ins:", error);
-      }
-    };
+          setAbsentToday(data);
+        } catch (error) {
+          console.error("Error fetching late check-ins:", error);
+        }
+      };
 
-    fetchData();
+      fetchData();
+    }
   }, []);
   //.............................................................Extract time from dateTime ...............................................................................
   function extractTime(dateTimeStr) {
@@ -106,25 +114,27 @@ const Dashboard = () => {
   // -----------------------------Dashbord bottom----------------------------
 
   useEffect(() => {
-    let config = {
-      method: "get",
-      maxBodyLength: Infinity,
-      url: "https://phs.azzappointments.com/apis/public/api/admin/active-users",
-      headers: {},
-    };
+    if (activeUsers === null) {
+      let config = {
+        method: "get",
+        maxBodyLength: Infinity,
+        url: "https://phs.azzappointments.com/apis/public/api/admin/active-users",
+        headers: {},
+      };
 
-    axios
-      .request(config)
-      .then((response) => {
-        // console.log(JSON.stringify(response.data));
-        const filteredUsers = response.data.users
-          .map((item) => item)
-          .filter((filter) => filter.workstation !== null);
-        setActiveUsers(filteredUsers);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+      axios
+        .request(config)
+        .then((response) => {
+          // console.log(JSON.stringify(response.data));
+          const filteredUsers = response.data.users
+            .map((item) => item)
+            .filter((filter) => filter.workstation !== null);
+          setActiveUsers(filteredUsers);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
   }, []);
 
   return (
@@ -1003,7 +1013,7 @@ const Dashboard = () => {
             </div>
             <dialog id="my_modal_8" className="modal">
               <div className="modal-box ">
-                <div className="text-center pb-2 -mt-4 font-semibold text-lg text-blueColor">
+                <div className="text-center pb-2 -mt-4 font-semibold text-lg text-blueColor  ">
                   Cisco Phone
                 </div>
                 <div className="overflow-y-scroll">
@@ -1034,85 +1044,6 @@ const Dashboard = () => {
                                 {item.workstation &&
                                 item.workstation.phone_cisco
                                   ? item.workstation.phone_cisco
-                                  : ""}
-                              </td>
-                            </tr>
-                          ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-              <form method="dialog" className="modal-backdrop">
-                <button>close</button>
-              </form>
-            </dialog>
-          </div>
-          <div>
-            <div
-              onClick={() => document.getElementById("my_modal_14").showModal()}
-              className=" btn  btn-primary flex-col items-center justify-center gap-2 bg-blueColor text-white w-[200px] h-[70px] border rounded border-gray-200 shadow-md  hover:bg-blueColor/50/80 hover:cursor-pointer"
-            >
-              <div className=" font-semibold">Laptop</div>
-              <div className="flex items-center justify-evenly gap-5">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width={24}
-                  height={24}
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="lucide lucide-laptop"
-                >
-                  <path d="M20 16V7a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v9m16 0H4m16 0 1.28 2.55a1 1 0 0 1-.9 1.45H3.62a1 1 0 0 1-.9-1.45L4 16" />
-                </svg>
-
-                <span>
-                  {activeUsers &&
-                    activeUsers
-                      .map((a) => a)
-                      .filter((filter) => filter.workstation.laptop > 0)
-                      .map((item) => item.workstation.laptop)
-                      .reduce(
-                        (accumulator, currentValue) =>
-                          parseInt(accumulator) + parseInt(currentValue),
-                        0
-                      )}
-                </span>
-              </div>
-            </div>
-            <dialog id="my_modal_14" className="modal">
-              <div className="modal-box ">
-                <div className="text-center pb-2 -mt-4 font-semibold text-lg text-blueColor  ">
-                  Laptop
-                </div>
-                <div className="overflow-y-scroll">
-                  <table className="table">
-                    {/* head */}
-                    <thead>
-                      <tr className="bg-blueColor text-black">
-                        <th>ID</th>
-                        <th>Name</th>
-                        <th>Count</th>
-                      </tr>
-                    </thead>
-                    <tbody className="">
-                      {activeUsers &&
-                        activeUsers
-                          .map((a) => a)
-                          .filter((filter) => filter.workstation.laptop > 0)
-                          .map((item) => (
-                            <tr
-                              key={item.id}
-                              className="bg-blueColor/10 hover:bg-blueColor/30 "
-                            >
-                              <td>{item.id}</td>
-                              <td>{item.name}</td>
-                              <td>
-                                {item.workstation && item.workstation.laptop
-                                  ? item.workstation.laptop
                                   : ""}
                               </td>
                             </tr>

@@ -43,7 +43,7 @@ function AttendanceReport() {
   //! UPDATE TIME *************
   const [updateDate, setUpdateDate] = useState(null);
   const [updateUser, setUpdateUser] = useState(null);
-  const [updateType, setUpdateType] = useState("check-in");
+  const [updateType, setUpdateType] = useState(null);
   const [updateTime, setUpdateTime] = useState(null);
 
   //! NOTIFICATION ****************
@@ -338,7 +338,7 @@ function AttendanceReport() {
     e.preventDefault();
 
     const checkTypeInOut =
-      updateType === "check-out" ? "check_out_time" : "check_in_time";
+      updateType === "check-in" ? "check_in_time" : "check_out_time";
 
     let data = JSON.stringify({
       [checkTypeInOut]: updateTime,
@@ -362,11 +362,6 @@ function AttendanceReport() {
         document.getElementById("time-update-form").reset();
         notifySuccess(response.data.message);
 
-        // setUpdateDate(null);
-        // setUpdateUser(null);
-        // setUpdateType(null);
-        // setUpdateTime(null);
-
         //! UPDATE USERS AGAIN ******************
 
         const fetchData = async () => {
@@ -389,14 +384,19 @@ function AttendanceReport() {
         };
 
         fetchData();
+
+        setUpdateDate(null);
+        setUpdateUser(null);
+        setUpdateType(null);
+        setUpdateTime(null);
       })
       .catch((err) => {
         //console.log(err.response.data.error);
         notifyError(err.response.data.error);
-        // setUpdateDate(null);
-        // setUpdateUser(null);
-        // setUpdateType(null);
-        // setUpdateTime(null);
+        setUpdateDate(null);
+        setUpdateUser(null);
+        setUpdateType(null);
+        setUpdateTime(null);
         document.getElementById("update_time").close();
         document.getElementById("time-update-form").reset();
       });
@@ -538,7 +538,6 @@ function AttendanceReport() {
                     <div className="label -mb-2">
                       <span className="label-text">Type</span>
                     </div>
-                    {console.log(updateType)}
                     <select
                       required
                       defaultValue={0}
@@ -932,14 +931,9 @@ function AttendanceReport() {
                                 user.short_leave}
                             </th>
                             <th className="text-center font-medium border border-black">
-                              {user.half_leave > 0
-                                ? user.late_strike +
-                                  user.half_leave +
-                                  user.half_leave +
-                                  user.short_leave
-                                : user.late_strike +
-                                  user.half_leave +
-                                  user.short_leave}
+                              {user.late_strike +
+                                user.half_leave +
+                                user.short_leave}
                             </th>
                             <th className="text-center font-medium border border-black">
                               {user.late_strike}

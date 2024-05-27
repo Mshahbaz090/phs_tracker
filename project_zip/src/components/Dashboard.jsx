@@ -1003,7 +1003,7 @@ const Dashboard = () => {
             </div>
             <dialog id="my_modal_8" className="modal">
               <div className="modal-box ">
-                <div className="text-center pb-2 -mt-4 font-semibold text-lg text-blueColor">
+                <div className="text-center pb-2 -mt-4 font-semibold text-lg text-blueColor  ">
                   Cisco Phone
                 </div>
                 <div className="overflow-y-scroll">
@@ -1073,8 +1073,8 @@ const Dashboard = () => {
                   {activeUsers &&
                     activeUsers
                       .map((a) => a)
-                      .filter((filter) => filter.workstation.laptop > 0)
-                      .map((item) => item.workstation.laptop)
+                      .filter((filter) => filter.workstation.phone_cisco > 0)
+                      .map((item) => item.workstation.phone_cisco)
                       .reduce(
                         (accumulator, currentValue) =>
                           parseInt(accumulator) + parseInt(currentValue),

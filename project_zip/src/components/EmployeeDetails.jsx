@@ -162,9 +162,6 @@ const EmployeeDetails = () => {
         setResponse(updatedUsers);
         setFilteredResponse(updatedUsers);
         notifySuccess("Employee updated successfully.");
-
-        document.getElementById("my_modal_3").close();
-
         axios
           .get(
             "https://phs.azzappointments.com/apis/public/api/admin/active-users"
@@ -182,7 +179,6 @@ const EmployeeDetails = () => {
         notifyError(
           "An error occurred while updating the employee. Please try again."
         );
-        document.getElementById("my_modal_3").close();
       });
     setInput("");
   };

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Dashboard from "./Dashboard";
 import AddEmployeeForm from "./Forms/AddEmployeeForm";
 import EmployeeDetails from "./EmployeeDetails";
@@ -10,7 +10,6 @@ import { addScreen } from "../Redux/screenSlice";
 import HR from "/hr.png";
 import RiskUser from "./RiskUser";
 import LeaveForm from "./LeaveForm";
-import axios from "axios";
 
 const Main = () => {
   const currentScreen = useSelector((state) => state.screen[0]);
@@ -18,23 +17,12 @@ const Main = () => {
   const [loginEmail, setLoginEmail] = useState(null);
   const [loginPassword, setLoginPassword] = useState(null);
   const [activeComponent, setActiveComponent] = useState("Dashboard");
+
   const dispatch = useDispatch();
-  const [showNotificationModel, setShownotificationmodel] = useState(false);
 
   const handleMobileMenu = () => {
     setMobileMenu(!mobileMenu);
   };
-
-  const [joiningDate, setJoiningDate] = useState([]);
-
-  useEffect(() => {
-    axios
-      .get("https://phs.azzappointments.com/apis/public/api/admin/joining-date")
-      .then((res) => {
-        setJoiningDate(res.data.users);
-        console.log(res.data.users);
-      });
-  }, []);
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -119,7 +107,8 @@ const Main = () => {
               </span>
             </div>
           </div>
-          <div className=" grid lg:grid-cols-8 grid-cols-1 max-lg:h-fit h-screen">
+
+          <div className=" grid lg:grid-cols-8 grid-cols-1 max-lg:h-fit h-screen  ">
             <div
               id="sidebar"
               className={
@@ -167,6 +156,7 @@ const Main = () => {
                     Dashboard
                   </span>
                 </div>
+
                 <div className="flex flex-col items-start justify-center gap-2">
                   <div className="font-semibold flex items-center justify-start gap-2 ">
                     <span>
@@ -188,6 +178,7 @@ const Main = () => {
                     </span>
                     Employees
                   </div>
+
                   <div
                     onClick={() => setActiveComponent("EmployeeDetails")}
                     className={
@@ -428,68 +419,13 @@ const Main = () => {
                 </div>
               </div>
             </div>
-            <div className="col-span-7 border border-gray-200">
+
+            <div className="col-span-7 border border-gray-200  ">
               <div className="flex p-5 flex-row justify-between items-center max-lg:hidden">
-                <h1 className="font-bold text-blueColor text-xl tracking-wider drop-shadow-sm">
+                <h1 className="font-bold text-blueColor text-xl tracking-wider drop-shadow-sm   ">
                   PHS Tracking Dashboard
                 </h1>
-                <div className="flex items-center justify-center gap-2">
-                  <div className="relative ">
-                    <div
-                      onClick={() =>
-                        setShownotificationmodel(!showNotificationModel)
-                      }
-                      className="font-bold  text-blueColor tracking-wider cursor-pointer "
-                    >
-                      <div className="font-bold mr-4 text-blueColor tracking-wider">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width={24}
-                          height={24}
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth={2}
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          className="lucide lucide-bell"
-                        >
-                          <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
-                          <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
-                        </svg>
-                        <div className="badge badge-info h-4 w-4 bg-red-500 text-white text-[9px] absolute -top-2 right-2  ">
-                          {joiningDate.length > 99 ? "+99" : joiningDate.length}
-                        </div>
-                        {showNotificationModel && (
-                          <div className="h-fit w-[320px] p-2 rounded-lg shadow-lg border absolute  bg-white z-20 mt-5 ">
-                            <div className="overflow-x-auto w-full h-[200px] border-2 rounded ">
-                              <table className="table">
-                                <thead>
-                                  <tr>
-                                    <th className=" sticky top-0 bg-white ">
-                                      ID
-                                    </th>
-                                    <th className=" sticky top-0 bg-white ">
-                                      Name
-                                    </th>
-                                  </tr>
-                                </thead>
-                                <tbody>
-                                  {joiningDate &&
-                                    joiningDate.map((item) => (
-                                      <tr key={item.id} className="hover">
-                                        <td>{item.id}</td>
-                                        <td>{item.name}</td>
-                                      </tr>
-                                    ))}
-                                </tbody>
-                              </table>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
+                <div className="flex items-center justify-center">
                   <div
                     onClick={() => setActiveComponent("AddEmployeeForm")}
                     className="btn btn-primary  text-white"
@@ -538,6 +474,7 @@ const Main = () => {
                 </div>
               </div>
               <hr />
+
               <div className="flex items-start justify-center overflow-y-scroll h-[90vh]">
                 {activeComponent === "Dashboard" && <Dashboard />}
                 {activeComponent === "AddEmployeeForm" && <AddEmployeeForm />}
@@ -576,6 +513,7 @@ const Main = () => {
                 placeholder="Enter email address"
                 className="input input-bordered w-full max-w-xs"
               />
+
               <input
                 onChange={(e) => setLoginPassword(e.target.value)}
                 required
@@ -583,6 +521,7 @@ const Main = () => {
                 placeholder="Enter password"
                 className="input input-bordered w-full max-w-xs -mt-5 -mb-5"
               />
+
               <button
                 type="submit"
                 className="btn btn-primary text-white w-full shadow-lg -mb-10"

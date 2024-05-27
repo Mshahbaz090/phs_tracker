@@ -23,8 +23,6 @@ const EmployeeDetails = () => {
     id: "",
     name: "",
     email: "",
-    cnic: "",
-    phone: "",
     department_id: "",
     shift_time: "",
   });
@@ -38,7 +36,6 @@ const EmployeeDetails = () => {
   const [mouse, setMouse] = useState(0);
   // const [elcs , setElcd] = useState(0);
   const [cisco, setCisco] = useState(0);
-  const [laptop, setLaptop] = useState(0);
   const [phone, setPhone] = useState(0);
   const [usb, setUsb] = useState(0);
   const [poly, setPoly] = useState(0);
@@ -84,7 +81,6 @@ const EmployeeDetails = () => {
       setKeyboard(user.workstation.keyboard);
       setMouse(user.workstation.mouse);
       setCisco(user.workstation.phone_cisco);
-      setLaptop(user.workstation.laptop);
       setPhone(user.workstation.headphones_phone);
       setUsb(user.workstation.headphones_usb);
       setPoly(user.workstation.phone_poly);
@@ -95,8 +91,6 @@ const EmployeeDetails = () => {
       id: user.id,
       name: user.name,
       email: user.email,
-      cnic: user.cnic,
-      phone: user.phone,
       department_id: user.department_id || "",
       joining_date: user.joining_date,
       emp_code: user.emp_code,
@@ -116,8 +110,7 @@ const EmployeeDetails = () => {
       lcd: lcd, // Replace "" with the value of lcd
       keyboard: keyboard, // Replace "" with the value of keyboard
       mouse: mouse, // Replace "" with the value of mouse
-      phone_cisco: cisco,
-      laptop: laptop, // Replace "" with the value of cisco
+      phone_cisco: cisco, // Replace "" with the value of cisco
       phone_poly: poly, // Replace "" with the value of poly
       headphones_usb: usb, // Replace "" with the value of usb
       headphones_phone: phone, // Replace "" with the value of phone
@@ -132,7 +125,6 @@ const EmployeeDetails = () => {
         keyboard: workstationData.keyboard,
         mouse: workstationData.mouse,
         phone_cisco: workstationData.phone_cisco,
-        laptop: workstationData.laptop,
         phone_poly: workstationData.phone_poly,
         headphones_usb: workstationData.headphones_usb,
         headphones_phone: workstationData.headphones_phone,
@@ -160,11 +152,9 @@ const EmployeeDetails = () => {
 
         // console.log("updated User:", updatedUsers);
         setResponse(updatedUsers);
+        // console.log(res.data);
         setFilteredResponse(updatedUsers);
-        notifySuccess("Employee updated successfully.");
-
-        document.getElementById("my_modal_3").close();
-
+        notifySuccess(res.data.message);
         axios
           .get(
             "https://phs.azzappointments.com/apis/public/api/admin/active-users"
@@ -182,7 +172,6 @@ const EmployeeDetails = () => {
         notifyError(
           "An error occurred while updating the employee. Please try again."
         );
-        document.getElementById("my_modal_3").close();
       });
     setInput("");
   };
@@ -209,9 +198,6 @@ const EmployeeDetails = () => {
 
   const handleCisco = (event) => {
     setCisco(event.target.value);
-  };
-  const handleLaptop = (event) => {
-    setLaptop(event.target.value);
   };
 
   const handleUsb = (event) => {
@@ -243,7 +229,6 @@ const EmployeeDetails = () => {
             placeholder="Search by Employee Name"
             className="input input-bordered w-full max-w-xs"
           />
-
           <div className="flex gap-1 font-semibold">
             <div>Total:</div>
             <div>{filteredResponse && filteredResponse.length}</div>
@@ -262,10 +247,7 @@ const EmployeeDetails = () => {
                   <th className="sticky top-0 bg-blueColor text-black">
                     Email
                   </th>
-                  <th className="sticky top-0 bg-blueColor text-black">
-                    Joining Date
-                  </th>
-
+                  <th className="sticky top-0 bg-blueColor text-black">DOJ</th>
                   <th className="sticky top-0 bg-blueColor text-black">Edit</th>
                   <th className="sticky top-0 bg-blueColor text-black">
                     Delete
@@ -284,7 +266,6 @@ const EmployeeDetails = () => {
                       <td>{user.name}</td>
                       <td>{user.email}</td>
                       <td>{user.joining_date}</td>
-
                       <td>
                         <button
                           onClick={() => {
@@ -352,59 +333,6 @@ const EmployeeDetails = () => {
                                 </label>
                                 <label className="form-control w-full max-w-xs">
                                   <div className="label -mb-2">
-                                    <span className="label-text">CNIC</span>
-                                  </div>
-                                  <input
-                                    required
-                                    maxLength={15}
-                                    value={formData.cnic}
-                                    onChange={(e) => {
-                                      const inputValue = e.target.value;
-                                      const formattedValue = inputValue
-                                        .replace(/\D/g, "")
-                                        .replace(
-                                          /(\d{5})(\d{7})(\d)/,
-                                          "$1-$2-$3"
-                                        )
-                                        .slice(0, 15);
-                                      setFormData({
-                                        ...formData,
-                                        cnic: formattedValue,
-                                      });
-                                    }}
-                                    name="cnic"
-                                    type="text"
-                                    placeholder="(XXXXX-XXXXXXX-X)"
-                                    className="input input-bordered w-full max-w-xs"
-                                  />
-                                </label>
-                                <label className="form-control w-full max-w-xs">
-                                  <div className="label -mb-2">
-                                    <span className="label-text">Phone</span>
-                                  </div>
-                                  <input
-                                    required
-                                    maxLength={13}
-                                    value={formData.phone}
-                                    onChange={(e) => {
-                                      const inputValue = e.target.value;
-                                      const formattedValue = inputValue
-                                        .replace(/\D/g, "")
-                                        .replace(/(\d{4})(\d{7})/, "$1-$2")
-                                        .slice(0, 13);
-                                      setFormData({
-                                        ...formData,
-                                        phone: formattedValue,
-                                      });
-                                    }}
-                                    name="phone"
-                                    type="tel"
-                                    placeholder="(0300-0011222)"
-                                    className="input input-bordered w-full max-w-xs"
-                                  />
-                                </label>
-                                <label className="form-control w-full max-w-xs">
-                                  <div className="label -mb-2">
                                     <span className="label-text">
                                       Joining Date
                                     </span>
@@ -446,9 +374,9 @@ const EmployeeDetails = () => {
                                   />
                                 </label>
 
-                                <div className="flex">
+                                <div className="flex ">
                                   <label className="form-control w-full max-w-xs">
-                                    <span className="label-text text-[12px]">
+                                    <span className="label-text text-[12px] ">
                                       System
                                     </span>
                                     <div className="label">
@@ -533,7 +461,6 @@ const EmployeeDetails = () => {
                                     </div>
                                   </label>
                                 </div>
-
                                 <div className="flex ">
                                   <label className="form-control w-full max-w-xs">
                                     <span className="label-text text-[12px] text-nowrap ">
@@ -552,7 +479,7 @@ const EmployeeDetails = () => {
                                   </label>
                                   <label className="form-control w-full max-w-xs">
                                     <span className="label-text text-[12px] text-nowrap ml-1 ">
-                                      CiscoPhone
+                                      Cisco Phone
                                     </span>
                                     <div className="label">
                                       <input
@@ -561,21 +488,6 @@ const EmployeeDetails = () => {
                                         min={"0"}
                                         type="number"
                                         placeholder="Count... "
-                                        className="input input-bordered w-full "
-                                      />
-                                    </div>
-                                  </label>
-                                  <label className="form-control w-full max-w-xs">
-                                    <span className="label-text text-[12px]  mr-6 ">
-                                      Laptop
-                                    </span>
-                                    <div className="label">
-                                      <input
-                                        onChange={handleLaptop}
-                                        value={laptop}
-                                        min={"0"}
-                                        type="number"
-                                        placeholder=""
                                         className="input input-bordered w-full "
                                       />
                                     </div>
@@ -597,8 +509,9 @@ const EmployeeDetails = () => {
 
                                     <div className="label"></div>
                                   </label>
-                                  <label className="form-control w-full max-w-xs ">
-                                    <span className="label-text text-[12px] text-nowrap ">
+
+                                  <label className="form-control w-full max-w-xs">
+                                    <span className="label-text text-[12px] text-nowrap ml-1 ">
                                       Webcam
                                     </span>
                                     <div className="label">
@@ -608,30 +521,12 @@ const EmployeeDetails = () => {
                                         min={"0"}
                                         type="number"
                                         placeholder="Count..."
-                                        className="input input-bordered w-[50px]  "
+                                        className="input input-bordered w-full "
                                       />
                                     </div>
                                   </label>
                                 </div>
 
-                                <div className="label ">
-                                  <span className="label-text -mb-1">
-                                    Shift Time
-                                  </span>
-                                </div>
-                                <input
-                                  value={formData.shift_time}
-                                  onChange={(e) =>
-                                    setFormData({
-                                      ...formData,
-                                      shift_time: e.target.value,
-                                    })
-                                  }
-                                  name="shift_time"
-                                  type="time"
-                                  placeholder="count..."
-                                  className="input input-bordered w-full "
-                                />
                                 <label className="form-control w-full max-w-xs">
                                   <div className="label -mb-2">
                                     <span className="label-text">
