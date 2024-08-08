@@ -6,7 +6,7 @@ import "react-date-range/dist/theme/default.css"; // theme css file
 import { DateRange } from "react-date-range";
 
 const AppUsage = () => {
-  const [response, setResponse] = useState(nul);
+  const [response, setResponse] = useState(null);
   const [users, setUsers] = useState(null);
   const [selectedOption, setSelectedOption] = useState(null);
   const [selectedUserId, setSelectedUserId] = useState(null);

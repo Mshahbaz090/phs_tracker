@@ -15,6 +15,7 @@ function AddEmployeeForm() {
     phone: "",
     personal_email: "",
     shift_time: "",
+    lockers: 0,
     department_id: "0",
     designation: "",
     leaving_date: "",
@@ -35,6 +36,7 @@ function AddEmployeeForm() {
   const [usb, setUsb] = useState(0);
   const [poly, setPoly] = useState(0);
   const [web, setWeb] = useState(0);
+  const [lockers, setLockers] = useState(0);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -95,11 +97,11 @@ function AddEmployeeForm() {
         department_id: formData.department_id,
         designation: formData.designation,
         leaving_date: formData.leaving_date,
-        workstation: `{"system": ${system}, "lcd": ${lcd},"keyboard": ${keyboard},  "mouse": ${mouse}, "phone_cisco": ${cisco}, "laptop": ${laptop}, "phone_poly":  ${poly}, "headphones_usb": ${usb}, "headphones_phone": ${phone},  "webcam": ${web}}`,
+        workstation: `{"system": ${system}, "lcd": ${lcd},"keyboard": ${keyboard},  "mouse": ${mouse}, "phone_cisco": ${cisco}, "laptop": ${laptop}, "phone_poly":  ${poly}, "headphones_usb": ${usb}, "headphones_phone": ${phone},  "webcam": ${web}, "lockers": ${lockers}}`,
         status: "active",
       });
 
-      console.log(data);
+      console.log(data, "data");
 
       let config = {
         method: "post",
@@ -110,10 +112,12 @@ function AddEmployeeForm() {
         },
         data: data,
       };
+      console.log(config, "config");
 
       axios
         .request(config)
         .then((response) => {
+          console.log(response, "response");
           notifySuccess(response.data.message);
           // console.log(response.data);
           setFormData({
@@ -143,6 +147,7 @@ function AddEmployeeForm() {
             setUsb(0),
             setPoly(0),
             setWeb(0);
+          setLockers(0);
         })
 
         .catch(() => {
@@ -196,6 +201,9 @@ function AddEmployeeForm() {
 
   const handleweb = (event) => {
     setWeb(event.target.value);
+  };
+  const handleLockers = (event) => {
+    setLockers(event.target.value);
   };
 
   return (
@@ -538,6 +546,21 @@ function AddEmployeeForm() {
               />
             </div>
           </label>
+          <label className="form-control w-full max-w-xs">
+            <span className="label-text">
+              <strong>Locker No:</strong>
+            </span>
+            <div className="label">
+              <input
+                onChange={handleLockers}
+                value={lockers}
+                min={"0"}
+                type="number"
+                placeholder="Count..."
+                className="input input-bordered w-full "
+              />
+            </div>
+          </label>
         </div>
 
         <select
@@ -603,3 +626,6 @@ function AddEmployeeForm() {
 }
 
 export default AddEmployeeForm;
+
+
+

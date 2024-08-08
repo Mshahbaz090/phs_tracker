@@ -43,6 +43,7 @@ const EmployeeDetails = () => {
   const [usb, setUsb] = useState(0);
   const [poly, setPoly] = useState(0);
   const [web, setWeb] = useState(0);
+  const [lockers, setLockers] = useState(0);
 
   const notifySuccess = (txt) => toast.success(txt);
   const notifyError = (txt) => toast.error(txt);
@@ -89,6 +90,7 @@ const EmployeeDetails = () => {
       setUsb(user.workstation.headphones_usb);
       setPoly(user.workstation.phone_poly);
       setWeb(user.workstation.webcam);
+      setLockers(user.workstation.lockers);
     }
     console.log(user.workstation);
     setFormData({
@@ -100,6 +102,7 @@ const EmployeeDetails = () => {
       department_id: user.department_id || "",
       joining_date: user.joining_date,
       emp_code: user.emp_code,
+      lockers: user.lockers,
       status: "active",
       shift_time: user.shift_time || "",
       // workstation:`{"system":${system},"lcd":${lcd},"keyboard":${keyboard},"mouse":${mouse},"phone_cisco":${cisco},"phone_poly": ${poly}, "headphones_usb":${usb},"headphones_phone":${phone},"webcam":${web}}`,
@@ -122,6 +125,7 @@ const EmployeeDetails = () => {
       headphones_usb: usb, // Replace "" with the value of usb
       headphones_phone: phone, // Replace "" with the value of phone
       webcam: web, // Replace "" with the value of web
+      lockers:lockers
     };
 
     const updatedData = {
@@ -137,6 +141,7 @@ const EmployeeDetails = () => {
         headphones_usb: workstationData.headphones_usb,
         headphones_phone: workstationData.headphones_phone,
         webcam: workstationData.webcam,
+        lockers:workstationData.lockers
       }),
     };
 
@@ -224,6 +229,9 @@ const EmployeeDetails = () => {
 
   const handleweb = (event) => {
     setWeb(event.target.value);
+  };
+  const handleLockers = (event) => {
+    setLockers(event.target.value);
   };
 
   return (
@@ -616,7 +624,21 @@ const EmployeeDetails = () => {
 
                                 <div className="label ">
                                   <span className="label-text -mb-1">
-                                    Shift Time
+                                    Locker No:
+                                  </span>
+                                </div>
+                                <input
+                                    onChange={handleLockers}
+                                    value={lockers}
+                                 
+                                  type="number"
+                                  placeholder="0"
+                                  className="input input-bordered w-full "
+                                  min={"0"}
+                                />
+                                <div className="label ">
+                                  <span className="label-text -mb-1">
+                                    Shift Time:
                                   </span>
                                 </div>
                                 <input
@@ -630,12 +652,12 @@ const EmployeeDetails = () => {
                                   name="shift_time"
                                   type="time"
                                   placeholder="count..."
-                                  className="input input-bordered w-full "
+                                  className="input input-bordered w-full"
                                 />
                                 <label className="form-control w-full max-w-xs">
                                   <div className="label -mb-2">
                                     <span className="label-text">
-                                      Department
+                                      Department:
                                     </span>
                                   </div>
                                   <select
@@ -651,7 +673,7 @@ const EmployeeDetails = () => {
                                     className="select select-bordered w-full max-w-xs"
                                   >
                                     <option disabled value="">
-                                      Select Department
+                                      Select Department:
                                     </option>
                                     {departmentOptions.map((option) => (
                                       <option key={option.id} value={option.id}>
